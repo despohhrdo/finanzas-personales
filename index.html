@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Finanzas Personales</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=DM+Sans:wght@400;500;700&display=swap');
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    :root {
+      --bg-primary: #0a0e14;
+      --bg-secondary: #151a23;
+      --bg-tertiary: #1e2633;
+      --accent-green: #3dd68c;
+      --accent-red: #ff6b6b;
+      --accent-blue: #4ecdc4;
+      --text-primary: #e6edf3;
+      --text-secondary: #8b949e;
+      --border: #30363d;
+    }
+    
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 20% 30%, rgba(61, 214, 140, 0.08) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 70%, rgba(78, 205, 196, 0.06) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+    
+    /* Login Screen */
+    #loginScreen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+    
+    .login-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      max-width: 400px;
+      width: 100%;
+      animation: fadeIn 0.5s ease;
+    }
+    
+    .login-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+    }
+    
+    .login-subtitle {
+      color: var(--text-secondary);
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .user-button {
+      background: var(--bg-tertiary);
+      border: 2px solid var(--border);
+      color: var(--text-primary);
+      padding: 1.25rem;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'DM Sans', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+    
+    .user-button:hover {
+      border-color: var(--accent-green);
+      transform: translateY(-2px);
+    }
+    
+    .user-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    
+    #appScreen {
+      display: none;
+    }
+    
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: var(--bg-secondary);
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    
+    .btn {
+      background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
+      color: var(--bg-primary);
+      border: none;
+      padding: 0.875rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      width: 100%;
+      transition: all 0.3s ease;
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(61, 214, 140, 0.3);
+    }
+    
+    .btn-secondary {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+    
+    input[type="password"], input[type="text"], input[type="number"], input[type="date"], select {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 0.875rem;
+      border-radius: 6px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+    
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--accent-green);
+    }
+    
+    .card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    @media (min-width: 768px) {
+      .grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    
+    .stat-card {
+      background: var(--bg-tertiary);
+      padding: 1rem;
+      border-radius: 8px;
+    }
+    
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    
+    .stat-value.positive { color: var(--accent-green); }
+    .stat-value.negative { color: var(--accent-red); }
+    
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+    }
+    
+    .tab {
+      padding: 0.875rem 1rem;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-weight: 500;
+      border-bottom: 2px solid transparent;
+      font-family: 'DM Sans', sans-serif;
+      white-space: nowrap;
+    }
+    
+    .tab.active {
+      color: var(--accent-green);
+      border-bottom-color: var(--accent-green);
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    .upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 3rem 2rem;
+      text-align: center;
+      cursor: pointer;
+      background: var(--bg-tertiary);
+      transition: all 0.3s ease;
+    }
+    
+    .upload-zone:hover {
+      border-color: var(--accent-green);
+    }
+    
+    input[type="file"] {
+      display: none;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 3rem 2rem;
+      color: var(--text-secondary);
+    }
+    
+    .transaction-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 1rem;
+      background: var(--bg-tertiary);
+      border-radius: 8px;
+      margin-bottom: 0.75rem;
+    }
+    
+    .transaction-item img {
+      max-width: 100%;
+      height: auto;
+    }
+    
+    #photoPreview img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 2rem;
+    }
+    
+    .spinner {
+      border: 3px solid var(--border);
+      border-top: 3px solid var(--accent-green);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Login Screen -->
+  <div id="loginScreen">
+    <div class="login-card">
+      <h1 class="login-title">Finanzas Personales</h1>
+      <p class="login-subtitle">Selecciona tu perfil</p>
+      
+      <button class="user-button" onclick="selectUser('Ricardo Parra')">
+        <div class="user-avatar">RP</div>
+        <div style="text-align: left;">
+          <div>Ricardo Parra</div>
+          <div style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 400;">Ver mis finanzas</div>
+        </div>
+      </button>
+      
+      <button class="user-button" onclick="selectUser('Joselyn Rosales')">
+        <div class="user-avatar">JR</div>
+        <div style="text-align: left;">
+          <div>Joselyn Rosales</div>
+          <div style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 400;">Ver mis finanzas</div>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- App Screen -->
+  <div id="appScreen">
+    <div class="container">
+      <header>
+        <div>
+          <h1>Finanzas Personales</h1>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">Gestión PEN & USD</p>
+        </div>
+        <div class="user-info">
+          <div class="user-avatar" style="width: 40px; height: 40px; font-size: 1.2rem;" id="userAvatar">RP</div>
+          <div id="userName">Usuario</div>
+          <button onclick="showSettings()" style="background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 1.2rem;">⚙️</button>
+          <button onclick="logout()" style="background: none; border: none; color: var(--accent-red); cursor: pointer; font-size: 1.2rem;">⎋</button>
+        </div>
+      </header>
+      
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('dashboard')">Dashboard</button>
+        <button class="tab" onclick="switchTab('transactions')">Transacciones</button>
+        <button class="tab" onclick="switchTab('upload')">Cargar PDF</button>
+        <button class="tab" onclick="switchTab('manual')">Agregar</button>
+      </div>
+      
+      <!-- Dashboard -->
+      <div id="dashboard" class="tab-content active">
+        <div class="grid">
+          <div class="stat-card">
+            <div class="stat-label">Balance Total</div>
+            <div class="stat-value" id="totalBalance">S/ 0.00</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Ingresos</div>
+            <div class="stat-value positive" id="totalIncome">S/ 0.00</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Gastos</div>
+            <div class="stat-value negative" id="totalExpenses">S/ 0.00</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Ahorro</div>
+            <div class="stat-value" id="totalSavings">S/ 0.00</div>
+          </div>
+        </div>
+        
+        <div class="card">
+          <h2>Transacciones Recientes</h2>
+          <div id="recentTransactions"></div>
+        </div>
+      </div>
+      
+      <!-- Transactions -->
+      <div id="transactions" class="tab-content">
+        <div class="card">
+          <h2>Todas las Transacciones</h2>
+          <div id="allTransactions"></div>
+        </div>
+      </div>
+      
+      <!-- Upload -->
+      <div id="upload" class="tab-content">
+        <div class="card">
+          <h2>Cargar Transacciones</h2>
+          <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Sube tu estado de cuenta o captura de pantalla</p>
+          
+          <div style="margin-bottom: 1rem;">
+            <button class="btn" onclick="document.getElementById('pdfInput').click()">
+              📄 Cargar PDF
+            </button>
+          </div>
+          
+          <div style="margin-bottom: 1rem;">
+            <button class="btn btn-secondary" onclick="document.getElementById('screenshotInput').click()">
+              📸 Cargar Imagen / Captura
+            </button>
+          </div>
+          
+          <input type="file" id="pdfInput" accept="application/pdf">
+          <input type="file" id="screenshotInput" accept="image/*">
+          
+          <div id="uploadStatus" style="margin-top: 1rem;"></div>
+          
+          <div style="margin-top: 2rem; padding: 1rem; background: rgba(78, 205, 196, 0.1); border-radius: 8px; border: 1px solid var(--accent-blue);">
+            <h3 style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--accent-blue);">💡 Consejos:</h3>
+            <ul style="font-size: 0.85rem; color: var(--text-secondary); margin-left: 1.5rem; line-height: 1.8;">
+              <li>Para PDF: Contraseña 47974760 se aplica automáticamente</li>
+              <li>Para imágenes: Toma captura de tu estado de cuenta online</li>
+              <li>Asegúrate que el texto sea legible</li>
+              <li>Puede procesar varias transacciones en una imagen</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Manual -->
+      <div id="manual" class="tab-content">
+        <div class="card">
+          <h2>Agregar Transacción</h2>
+          
+          <div style="margin-bottom: 1rem;">
+            <button class="btn" onclick="showManualForm()">📝 Entrada Manual</button>
+          </div>
+          <div style="margin-bottom: 1rem;">
+            <button class="btn btn-secondary" onclick="document.getElementById('photoInput').click()">📷 Foto de Boleta</button>
+            <input type="file" id="photoInput" accept="image/*" capture="environment">
+          </div>
+          
+          <div id="photoPreview" style="margin-bottom: 1rem;"></div>
+          
+          <div id="manualForm">
+            <select id="transactionType">
+              <option value="expense">Gasto</option>
+              <option value="income">Ingreso</option>
+            </select>
+            
+            <select id="currency">
+              <option value="PEN">Soles (PEN)</option>
+              <option value="USD">Dólares (USD)</option>
+            </select>
+            
+            <input type="text" id="description" placeholder="Descripción">
+            <input type="number" id="amount" placeholder="Monto" step="0.01">
+            <input type="date" id="date">
+            
+            <select id="category">
+              <option value="Alimentación">Alimentación</option>
+              <option value="Transporte">Transporte</option>
+              <option value="Servicios">Servicios</option>
+              <option value="Entretenimiento">Entretenimiento</option>
+              <option value="Salud">Salud</option>
+              <option value="Educación">Educación</option>
+              <option value="Inversión">Inversión</option>
+              <option value="Hipoteca">Hipoteca</option>
+              <option value="Seguros">Seguros</option>
+              <option value="Otros">Otros</option>
+            </select>
+            
+            <button class="btn" onclick="addTransaction()">Agregar Transacción</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Global state
+    let currentUser = null;
+    let userPasswords = {};
+    let transactions = [];
+    
+    const USERS = {
+      'Ricardo Parra': { avatar: 'RP', password: '1234' },
+      'Joselyn Rosales': { avatar: 'JR', password: '1234' }
+    };
+    
+    // Initialize
+    window.addEventListener('load', init);
+    
+    async function init() {
+      try {
+        // Load passwords from localStorage
+        const savedPasswords = localStorage.getItem('user_passwords');
+        if (savedPasswords) userPasswords = JSON.parse(savedPasswords);
+        
+        // Check for remembered user
+        const remembered = localStorage.getItem('remembered_user');
+        const useFaceID = localStorage.getItem('use_faceid') === 'true';
+        
+        if (remembered && useFaceID && checkFaceIDSupport()) {
+          showFaceIDScreen(remembered);
+        } else if (remembered) {
+          showPasswordScreen(remembered);
+        }
+        
+        // Setup file inputs
+        const pdfInput = document.getElementById('pdfInput');
+        const screenshotInput = document.getElementById('screenshotInput');
+        
+        pdfInput.addEventListener('change', handlePDFUpload);
+        screenshotInput.addEventListener('change', handleScreenshotUpload);
+        
+        // Setup photo input for manual entry
+        document.getElementById('photoInput').addEventListener('change', handlePhotoUpload);
+        
+        // Set today's date in dd/mm/yyyy format
+        setTodayDate();
+        
+      } catch (error) {
+        console.error('Init error:', error);
+      }
+    }
+    
+    function setTodayDate() {
+      const today = new Date();
+      const day = String(today.getDate()).padStart(2, '0');
+      const month = String(today.getMonth() + 1).padStart(2, '0');
+      const year = today.getFullYear();
+      document.getElementById('date').value = `${year}-${month}-${day}`;
+    }
+    
+    function checkFaceIDSupport() {
+      return window.PublicKeyCredential !== undefined;
+    }
+    
+    function selectUser(username) {
+      showPasswordScreen(username);
+    }
+    
+    function goBackToUserSelection() {
+      document.getElementById('loginScreen').innerHTML = `
+        <div class="login-card">
+          <h1 class="login-title">Finanzas Personales</h1>
+          <p class="login-subtitle">Selecciona tu perfil</p>
+          
+          <button class="user-button" onclick="selectUser('Ricardo Parra')">
+            <div class="user-avatar">RP</div>
+            <div style="text-align: left;">
+              <div>Ricardo Parra</div>
+              <div style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 400;">Ver mis finanzas</div>
+            </div>
+          </button>
+          
+          <button class="user-button" onclick="selectUser('Joselyn Rosales')">
+            <div class="user-avatar">JR</div>
+            <div style="text-align: left;">
+              <div>Joselyn Rosales</div>
+              <div style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 400;">Ver mis finanzas</div>
+            </div>
+          </button>
+        </div>
+      `;
+    }
+    
+    function showFaceIDScreen(username) {
+      const user = USERS[username];
+      
+      document.getElementById('loginScreen').innerHTML = `
+        <div class="login-card">
+          <div style="text-align: center; margin-bottom: 2rem;">
+            <div class="user-avatar" style="width: 80px; height: 80px; font-size: 2rem; margin: 0 auto 1rem;">${user.avatar}</div>
+            <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem;">${username}</h2>
+            <p style="color: var(--text-secondary); font-size: 0.9rem;">Usa Face ID para continuar</p>
+          </div>
+          
+          <div style="font-size: 4rem; text-align: center; margin: 2rem 0; opacity: 0.5;">🔐</div>
+          
+          <button class="btn" onclick="authenticateWithFaceID('${username}')">
+            Autenticar con Face ID
+          </button>
+          
+          <button class="btn btn-secondary" onclick="showPasswordScreen('${username}')" style="margin-top: 0.75rem;">
+            Usar Contraseña
+          </button>
+        </div>
+      `;
+    }
+    
+    async function authenticateWithFaceID(username) {
+      try {
+        const credentialId = localStorage.getItem(`faceid_${username}`);
+        
+        if (!credentialId) {
+          alert('Face ID no configurado. Usa contraseña.');
+          showPasswordScreen(username);
+          return;
+        }
+        
+        const credential = await navigator.credentials.get({
+          publicKey: {
+            challenge: new Uint8Array(32),
+            allowCredentials: [{
+              id: new Uint8Array(JSON.parse(credentialId)),
+              type: 'public-key'
+            }],
+            userVerification: "required",
+            timeout: 60000
+          }
+        });
+        
+        // Successful authentication
+        currentUser = username;
+        localStorage.setItem('current_user', username);
+        await loadUserData();
+        showApp();
+        
+      } catch (error) {
+        console.error('Face ID error:', error);
+        alert('Error con Face ID. Intenta con contraseña.');
+        showPasswordScreen(username);
+      }
+    }
+    
+    function showPasswordScreen(username) {
+      const user = USERS[username];
+      const savedPassword = userPasswords[username] || user.password;
+      const hasFaceID = checkFaceIDSupport();
+      
+      document.getElementById('loginScreen').innerHTML = `
+        <div class="login-card">
+          <div style="text-align: center; margin-bottom: 2rem;">
+            <div class="user-avatar" style="width: 80px; height: 80px; font-size: 2rem; margin: 0 auto 1rem;">${user.avatar}</div>
+            <h2 style="font-size: 1.5rem;">${username}</h2>
+            <p style="color: var(--text-secondary); font-size: 0.9rem;">Ingresa tu contraseña</p>
+          </div>
+          
+          <input type="password" id="passwordInput" placeholder="Contraseña" style="margin-bottom: 1rem;">
+          
+          <div style="margin-bottom: 1rem;">
+            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+              <input type="checkbox" id="rememberMe">
+              <span style="font-size: 0.9rem;">Recordar en este dispositivo</span>
+            </label>
+          </div>
+          
+          ${hasFaceID ? `
+            <div style="margin-bottom: 1rem;">
+              <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                <input type="checkbox" id="useFaceID">
+                <span style="font-size: 0.9rem;">🔐 Usar Face ID</span>
+              </label>
+              <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem; margin-left: 1.75rem;">
+                Nota: Face ID requiere HTTPS o localhost
+              </p>
+            </div>
+          ` : ''}
+          
+          <button class="btn" onclick="attemptLogin('${username}')">Iniciar Sesión</button>
+          <button class="btn btn-secondary" onclick="goBackToUserSelection()" style="margin-top: 0.75rem;">← Volver</button>
+          
+          <div id="loginError" style="margin-top: 1rem; color: var(--accent-red); text-align: center;"></div>
+          
+          ${!userPasswords[username] ? `
+            <div style="margin-top: 1rem; padding: 1rem; background: rgba(255, 211, 61, 0.1); border-radius: 8px;">
+              <p style="font-size: 0.85rem; color: var(--text-secondary);">⚠️ Contraseña inicial: <strong>1234</strong></p>
+              <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">Cámbiala desde Configuración</p>
+            </div>
+          ` : ''}
+        </div>
+      `;
+      
+      setTimeout(() => {
+        const input = document.getElementById('passwordInput');
+        input.focus();
+        input.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') attemptLogin(username);
+        });
+      }, 100);
+    }
+    
+    async function attemptLogin(username) {
+      const password = document.getElementById('passwordInput').value;
+      const remember = document.getElementById('rememberMe').checked;
+      const useFaceID = document.getElementById('useFaceID') ? document.getElementById('useFaceID').checked : false;
+      const errorDiv = document.getElementById('loginError');
+      
+      const user = USERS[username];
+      const savedPassword = userPasswords[username] || user.password;
+      
+      if (password === savedPassword) {
+        currentUser = username;
+        
+        if (remember) {
+          localStorage.setItem('remembered_user', username);
+        }
+        
+        if (useFaceID && checkFaceIDSupport()) {
+          await setupFaceID(username);
+        }
+        
+        localStorage.setItem('current_user', username);
+        await loadUserData();
+        showApp();
+      } else {
+        errorDiv.textContent = '❌ Contraseña incorrecta';
+        document.getElementById('passwordInput').value = '';
+        document.getElementById('passwordInput').style.animation = 'shake 0.5s';
+        setTimeout(() => {
+          document.getElementById('passwordInput').style.animation = '';
+        }, 500);
+      }
+    }
+    
+    async function setupFaceID(username) {
+      try {
+        // Face ID solo funciona en contexto seguro (HTTPS)
+        if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
+          console.log('Face ID requiere HTTPS o localhost');
+          localStorage.setItem('use_faceid', 'false');
+          return;
+        }
+        
+        const credential = await navigator.credentials.create({
+          publicKey: {
+            challenge: new Uint8Array(32),
+            rp: { name: "Finanzas Personales" },
+            user: {
+              id: new Uint8Array(16),
+              name: username,
+              displayName: username
+            },
+            pubKeyCredParams: [{ type: "public-key", alg: -7 }],
+            authenticatorSelection: {
+              authenticatorAttachment: "platform",
+              userVerification: "required"
+            },
+            timeout: 60000,
+            attestation: "none"
+          }
+        });
+        
+        localStorage.setItem(`faceid_${username}`, JSON.stringify(Array.from(new Uint8Array(credential.rawId))));
+        localStorage.setItem('use_faceid', 'true');
+        
+      } catch (error) {
+        console.error('Face ID setup error:', error);
+        // Si falla, solo no usar Face ID pero continuar
+        localStorage.setItem('use_faceid', 'false');
+      }
+    }
+    
+    async function logout() {
+      if (confirm('¿Cerrar sesión?')) {
+        currentUser = null;
+        transactions = [];
+        localStorage.removeItem('current_user');
+        location.reload();
+      }
+    }
+    
+    function showApp() {
+      const user = USERS[currentUser];
+      document.getElementById('userName').textContent = currentUser;
+      document.getElementById('userAvatar').textContent = user.avatar;
+      
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('appScreen').style.display = 'block';
+      
+      updateDashboard();
+    }
+    
+    function showSettings() {
+      const modal = document.createElement('div');
+      modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 1rem;';
+      
+      modal.innerHTML = `
+        <div class="card" style="max-width: 500px; width: 100%;">
+          <h2>Configuración</h2>
+          
+          <h3 style="font-size: 1rem; margin: 1.5rem 0 1rem; color: var(--text-secondary);">Cambiar Contraseña</h3>
+          
+          <input type="password" id="currentPass" placeholder="Contraseña actual">
+          <input type="password" id="newPass" placeholder="Nueva contraseña">
+          <input type="password" id="confirmPass" placeholder="Confirmar contraseña">
+          
+          <button class="btn" onclick="changePassword()">Cambiar Contraseña</button>
+          
+          <div id="passwordStatus" style="margin-top: 1rem;"></div>
+          
+          <button class="btn btn-secondary" onclick="this.parentElement.parentElement.remove()" style="margin-top: 1rem;">Cerrar</button>
+        </div>
+      `;
+      
+      document.body.appendChild(modal);
+    }
+    
+    async function changePassword() {
+      const current = document.getElementById('currentPass').value;
+      const newPass = document.getElementById('newPass').value;
+      const confirm = document.getElementById('confirmPass').value;
+      const status = document.getElementById('passwordStatus');
+      
+      const user = USERS[currentUser];
+      const savedPassword = userPasswords[currentUser] || user.password;
+      
+      if (current !== savedPassword) {
+        status.innerHTML = '<p style="color: var(--accent-red);">❌ Contraseña actual incorrecta</p>';
+        return;
+      }
+      
+      if (newPass.length < 4) {
+        status.innerHTML = '<p style="color: var(--accent-red);">❌ Mínimo 4 caracteres</p>';
+        return;
+      }
+      
+      if (newPass !== confirm) {
+        status.innerHTML = '<p style="color: var(--accent-red);">❌ Las contraseñas no coinciden</p>';
+        return;
+      }
+      
+      userPasswords[currentUser] = newPass;
+      localStorage.setItem('user_passwords', JSON.stringify(userPasswords));
+      
+      status.innerHTML = '<p style="color: var(--accent-green);">✓ Contraseña cambiada exitosamente</p>';
+      
+      document.getElementById('currentPass').value = '';
+      document.getElementById('newPass').value = '';
+      document.getElementById('confirmPass').value = '';
+    }
+    
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.getElementById(tabName).classList.add('active');
+      
+      if (tabName === 'transactions') updateTransactionsList();
+    }
+    
+    function showManualForm() {
+      document.getElementById('photoPreview').innerHTML = '';
+    }
+    
+    async function handlePhotoUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      const preview = document.getElementById('photoPreview');
+      preview.innerHTML = '<div class="loading"><div class="spinner"></div><p>Analizando imagen...</p></div>';
+      
+      try {
+        const base64 = await fileToBase64(file);
+        
+        preview.innerHTML = `<img src="data:image/jpeg;base64,${base64}" style="max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 1rem;">`;
+        
+        const data = await extractFromImage(base64);
+        
+        if (data.description) document.getElementById('description').value = data.description;
+        if (data.amount) document.getElementById('amount').value = data.amount;
+        if (data.category) document.getElementById('category').value = data.category;
+        if (data.currency) document.getElementById('currency').value = data.currency;
+        
+        preview.innerHTML += '<p style="color: var(--accent-green); font-size: 0.9rem;">✓ Datos extraídos - verifica y confirma</p>';
+        
+      } catch (error) {
+        preview.innerHTML = `<p style="color: var(--accent-red); font-size: 0.9rem;">❌ Error: ${error.message}</p>`;
+      }
+    }
+    
+    async function handleScreenshotUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      const status = document.getElementById('uploadStatus');
+      status.innerHTML = `
+        <div style="margin-bottom: 1rem;">
+          <img src="${URL.createObjectURL(file)}" style="max-width: 100%; border-radius: 8px; border: 2px solid var(--border);">
+        </div>
+        <div class="loading">
+          <div class="spinner"></div>
+          <p>Extrayendo transacciones de la imagen...</p>
+        </div>
+      `;
+      
+      try {
+        const base64 = await fileToBase64(file);
+        const extracted = await extractTransactionsFromImage(base64);
+        
+        transactions = [...transactions, ...extracted];
+        await saveUserData();
+        updateDashboard();
+        
+        status.innerHTML = `
+          <div style="padding: 1rem; background: rgba(61, 214, 140, 0.1); border: 1px solid var(--accent-green); border-radius: 8px; color: var(--accent-green);">
+            ✓ ${extracted.length} transacción(es) extraída(s) exitosamente
+          </div>
+        `;
+        
+        setTimeout(() => {
+          document.querySelectorAll('.tab')[1].click();
+        }, 2000);
+        
+      } catch (error) {
+        status.innerHTML = `
+          <div style="padding: 1rem; background: rgba(255, 107, 107, 0.1); border: 1px solid var(--accent-red); border-radius: 8px; color: var(--accent-red);">
+            ❌ Error: ${error.message}
+          </div>
+        `;
+      }
+    }
+    
+    async function extractTransactionsFromImage(base64) {
+      try {
+        console.log('Iniciando extracción de imagen...');
+        
+        const response = await fetch("https://api.anthropic.com/v1/messages", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "claude-sonnet-4-20250514",
+            max_tokens: 4000,
+            messages: [{
+              role: "user",
+              content: [{
+                type: "image",
+                source: { 
+                  type: "base64", 
+                  media_type: "image/jpeg", 
+                  data: base64 
+                }
+              }, {
+                type: "text",
+                text: `Analiza esta captura de pantalla o imagen de un estado de cuenta bancario.
+
+Extrae TODAS las transacciones visibles.
+
+Devuelve un JSON con este formato EXACTO:
+
+{
+  "transactions": [
+    {
+      "date": "2026-05-04",
+      "description": "Descripción del movimiento",
+      "amount": -150.50,
+      "type": "expense",
+      "currency": "PEN",
+      "category": "Alimentación"
+    }
+  ]
+}
+
+REGLAS:
+- amount: negativo para gastos/cargos, positivo para abonos/ingresos
+- type: "expense" para gastos, "income" para ingresos
+- currency: "PEN" para soles (S/), "USD" para dólares ($)
+- category: Alimentación, Transporte, Servicios, Entretenimiento, Salud, Educación, Inversión, Hipoteca, Seguros, u Otros
+- date: formato YYYY-MM-DD (si no hay año, usa 2026)
+
+Si hay múltiples transacciones en la imagen, extrae TODAS.
+
+IMPORTANTE: Devuelve ÚNICAMENTE el JSON válido, sin \`\`\`json, sin markdown, sin explicaciones.`
+              }]
+            }]
+          })
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Error de API: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (!data || !data.content || !Array.isArray(data.content)) {
+          throw new Error('Formato de respuesta inválido');
+        }
+        
+        const textBlock = data.content.find(c => c && c.type === "text");
+        
+        if (!textBlock || !textBlock.text) {
+          throw new Error('No se pudo extraer texto de la imagen');
+        }
+        
+        console.log('Raw text from image:', textBlock.text);
+        
+        let cleanText = textBlock.text.trim();
+        cleanText = cleanText.replace(/```json\s*/g, '').replace(/```\s*/g, '');
+        
+        const jsonMatch = cleanText.match(/\{[\s\S]*"transactions"[\s\S]*\}/);
+        if (jsonMatch) {
+          cleanText = jsonMatch[0];
+        }
+        
+        const parsed = JSON.parse(cleanText);
+        
+        if (!parsed.transactions || !Array.isArray(parsed.transactions)) {
+          throw new Error('No se encontraron transacciones');
+        }
+        
+        if (parsed.transactions.length === 0) {
+          throw new Error('No se detectaron transacciones en la imagen');
+        }
+        
+        console.log('Extracted transactions from image:', parsed.transactions);
+        return parsed.transactions;
+        
+      } catch (error) {
+        console.error('Error completo:', error);
+        throw error;
+      }
+    }
+    
+    async function handlePDFUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      const status = document.getElementById('uploadStatus');
+      status.innerHTML = '<div class="loading"><div class="spinner"></div><p>Procesando PDF...</p></div>';
+      
+      try {
+        const base64 = await fileToBase64(file);
+        const extracted = await extractFromPDF(base64);
+        
+        transactions = [...transactions, ...extracted];
+        await saveUserData();
+        updateDashboard();
+        
+        status.innerHTML = `<p style="color: var(--accent-green);">✓ ${extracted.length} transacciones extraídas</p>`;
+        
+        setTimeout(() => {
+          document.querySelectorAll('.tab')[1].click();
+        }, 2000);
+        
+      } catch (error) {
+        status.innerHTML = `<p style="color: var(--accent-red);">❌ Error: ${error.message}</p>`;
+      }
+    }
+    
+    async function addTransaction() {
+      const type = document.getElementById('transactionType').value;
+      const currency = document.getElementById('currency').value;
+      const description = document.getElementById('description').value;
+      const amount = parseFloat(document.getElementById('amount').value);
+      const date = document.getElementById('date').value;
+      const category = document.getElementById('category').value;
+      
+      if (!description || !amount || !date) {
+        alert('Completa todos los campos');
+        return;
+      }
+      
+      transactions.push({
+        date,
+        description,
+        amount: type === 'expense' ? -Math.abs(amount) : Math.abs(amount),
+        type,
+        currency,
+        category
+      });
+      
+      await saveUserData();
+      updateDashboard();
+      
+      document.getElementById('description').value = '';
+      document.getElementById('amount').value = '';
+      document.getElementById('photoPreview').innerHTML = '';
+      
+      document.querySelectorAll('.tab')[1].click();
+    }
+    
+    function updateDashboard() {
+      const balance = transactions.reduce((sum, t) => sum + t.amount, 0);
+      const income = transactions.filter(t => t.amount > 0).reduce((sum, t) => sum + t.amount, 0);
+      const expenses = Math.abs(transactions.filter(t => t.amount < 0).reduce((sum, t) => sum + t.amount, 0));
+      const savings = income - expenses;
+      
+      document.getElementById('totalBalance').textContent = formatMoney(balance);
+      document.getElementById('totalBalance').className = 'stat-value ' + (balance >= 0 ? 'positive' : 'negative');
+      document.getElementById('totalIncome').textContent = formatMoney(income);
+      document.getElementById('totalExpenses').textContent = formatMoney(expenses);
+      document.getElementById('totalSavings').textContent = formatMoney(savings);
+      document.getElementById('totalSavings').className = 'stat-value ' + (savings >= 0 ? 'positive' : 'negative');
+      
+      updateRecentTransactions();
+    }
+    
+    function updateRecentTransactions() {
+      const recent = [...transactions].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+      
+      const html = recent.length > 0
+        ? recent.map(t => `
+            <div class="transaction-item">
+              <div>
+                <div style="font-weight: 500;">${t.description}</div>
+                <div style="font-size: 0.85rem; color: var(--text-secondary);">${formatDateForDisplay(t.date)} • ${t.currency}</div>
+              </div>
+              <div style="font-weight: 600; color: ${t.amount >= 0 ? 'var(--accent-green)' : 'var(--accent-red)'};">
+                ${t.amount >= 0 ? '+' : ''}${formatMoney(Math.abs(t.amount))}
+              </div>
+            </div>
+          `).join('')
+        : '<div class="empty-state"><p>No hay transacciones</p></div>';
+      
+      document.getElementById('recentTransactions').innerHTML = html;
+    }
+    
+    function updateTransactionsList() {
+      const sorted = [...transactions].sort((a, b) => new Date(b.date) - new Date(a.date));
+      
+      const html = sorted.length > 0
+        ? sorted.map(t => `
+            <div class="transaction-item">
+              <div>
+                <div style="font-weight: 500;">${t.description}</div>
+                <div style="font-size: 0.85rem; color: var(--text-secondary);">${formatDateForDisplay(t.date)} • ${t.currency} • ${t.category}</div>
+              </div>
+              <div style="font-weight: 600; color: ${t.amount >= 0 ? 'var(--accent-green)' : 'var(--accent-red)'};">
+                ${t.amount >= 0 ? '+' : ''}${formatMoney(Math.abs(t.amount))}
+              </div>
+            </div>
+          `).join('')
+        : '<div class="empty-state"><p>No hay transacciones</p></div>';
+      
+      document.getElementById('allTransactions').innerHTML = html;
+    }
+    
+    async function extractFromImage(base64) {
+      try {
+        const response = await fetch("https://api.anthropic.com/v1/messages", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "claude-sonnet-4-20250514",
+            max_tokens: 1000,
+            messages: [{
+              role: "user",
+              content: [{
+                type: "image",
+                source: { type: "base64", media_type: "image/jpeg", data: base64 }
+              }, {
+                type: "text",
+                text: `Analiza esta boleta y extrae:
+
+{
+  "description": "nombre del comercio",
+  "amount": número del monto,
+  "currency": "PEN" o "USD",
+  "category": "categoría"
+}
+
+Categorías: Alimentación, Transporte, Servicios, Entretenimiento, Salud, Educación, Inversión, Hipoteca, Seguros, Otros
+
+Solo JSON, sin markdown.`
+              }]
+            }]
+          })
+        });
+        
+        if (!response.ok) {
+          throw new Error('Error en la API');
+        }
+        
+        const data = await response.json();
+        
+        if (!data.content || !Array.isArray(data.content)) {
+          throw new Error('Formato inválido');
+        }
+        
+        const textBlock = data.content.find(c => c.type === "text");
+        
+        if (!textBlock || !textBlock.text) {
+          throw new Error('No se pudo leer la imagen');
+        }
+        
+        const text = textBlock.text;
+        const cleanJson = text.replace(/```json|```/g, "").trim();
+        return JSON.parse(cleanJson);
+        
+      } catch (error) {
+        console.error('Error extracting from image:', error);
+        throw new Error(`No se pudo procesar la imagen: ${error.message}`);
+      }
+    }
+    
+    async function extractFromPDF(base64) {
+      try {
+        console.log('Iniciando extracción de PDF...');
+        
+        const response = await fetch("https://api.anthropic.com/v1/messages", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "claude-sonnet-4-20250514",
+            max_tokens: 4000,
+            messages: [{
+              role: "user",
+              content: [{
+                type: "document",
+                source: { 
+                  type: "base64", 
+                  media_type: "application/pdf", 
+                  data: base64 
+                }
+              }, {
+                type: "text",
+                text: `Este es un estado de cuenta bancario protegido con contraseña: 47974760
+
+Analiza el documento y extrae TODAS las transacciones.
+
+Devuelve un JSON con este formato EXACTO (sin comentarios, sin explicaciones):
+
+{
+  "transactions": [
+    {
+      "date": "2026-05-04",
+      "description": "Nombre del comercio o concepto",
+      "amount": -150.50,
+      "type": "expense",
+      "currency": "PEN",
+      "category": "Alimentación"
+    }
+  ]
+}
+
+REGLAS:
+- amount: negativo para gastos, positivo para ingresos
+- type: "expense" para gastos, "income" para ingresos
+- currency: "PEN" para soles, "USD" para dólares
+- category: Alimentación, Transporte, Servicios, Entretenimiento, Salud, Educación, Inversión, Hipoteca, Seguros, u Otros
+- date: formato YYYY-MM-DD
+
+IMPORTANTE: Devuelve ÚNICAMENTE el JSON válido, sin \`\`\`json, sin markdown, sin explicaciones.`
+              }]
+            }]
+          })
+        });
+        
+        console.log('Response status:', response.status);
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('API Error:', errorText);
+          throw new Error(`Error de API: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('Response data:', data);
+        
+        // Verificar estructura de respuesta
+        if (!data || typeof data !== 'object') {
+          throw new Error('Respuesta inválida de la API');
+        }
+        
+        if (!data.content || !Array.isArray(data.content)) {
+          console.error('Content missing or not array:', data);
+          throw new Error('Formato de contenido inválido');
+        }
+        
+        // Buscar el bloque de texto
+        const textBlock = data.content.find(c => c && c.type === "text");
+        
+        if (!textBlock || !textBlock.text) {
+          console.error('No text block found:', data.content);
+          throw new Error('No se encontró texto en la respuesta');
+        }
+        
+        console.log('Raw text:', textBlock.text);
+        
+        // Limpiar el texto
+        let cleanText = textBlock.text.trim();
+        
+        // Remover markdown si existe
+        cleanText = cleanText.replace(/```json\s*/g, '').replace(/```\s*/g, '');
+        
+        // Intentar encontrar el JSON si está rodeado de texto
+        const jsonMatch = cleanText.match(/\{[\s\S]*"transactions"[\s\S]*\}/);
+        if (jsonMatch) {
+          cleanText = jsonMatch[0];
+        }
+        
+        console.log('Clean text:', cleanText);
+        
+        // Parsear JSON
+        let parsed;
+        try {
+          parsed = JSON.parse(cleanText);
+        } catch (parseError) {
+          console.error('JSON parse error:', parseError);
+          console.error('Text that failed to parse:', cleanText);
+          throw new Error('El PDF no contiene un formato válido de transacciones');
+        }
+        
+        // Verificar estructura
+        if (!parsed.transactions || !Array.isArray(parsed.transactions)) {
+          console.error('Invalid structure:', parsed);
+          throw new Error('No se encontraron transacciones en el formato esperado');
+        }
+        
+        if (parsed.transactions.length === 0) {
+          throw new Error('No se encontraron transacciones en el PDF');
+        }
+        
+        console.log('Extracted transactions:', parsed.transactions);
+        return parsed.transactions;
+        
+      } catch (error) {
+        console.error('Error completo:', error);
+        throw error;
+      }
+    }
+    
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+    
+    async function loadUserData() {
+      const data = localStorage.getItem(`${currentUser}_transactions`);
+      if (data) transactions = JSON.parse(data);
+    }
+    
+    async function saveUserData() {
+      localStorage.setItem(`${currentUser}_transactions`, JSON.stringify(transactions));
+    }
+    
+    function formatMoney(amount) {
+      return new Intl.NumberFormat('es-PE', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(Math.abs(amount));
+    }
+    
+    function formatDateForDisplay(dateString) {
+      const [year, month, day] = dateString.split('-');
+      return `${day}/${month}/${year}`;
+    }
+    
+    function parseDisplayDate(displayDate) {
+      const [day, month, year] = displayDate.split('/');
+      return `${year}-${month}-${day}`;
+    }
+  </script>
+</body>
+</html>
